@@ -2,13 +2,22 @@ import {Offer} from '../../types/offers';
 
 type OfferCardProps = {
   offer: Offer;
+  onHover: (offer?: Offer) => void;
 };
 
-function OfferCard({offer}: OfferCardProps): JSX.Element {
+function OfferCard({offer, onHover}: OfferCardProps): JSX.Element {
   const { isPremium, previewImage, price, rating, title, type } = offer;
 
+  const handleMouseEnter = () => {
+    onHover(offer);
+  };
+
+  const handleMouseLeave = () => {
+    onHover();
+  };
+
   return (
-    <article className="cities__card place-card">
+    <article className="cities__card place-card" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       {isPremium &&
       <div className="place-card__mark">
         <span>Premium</span>
