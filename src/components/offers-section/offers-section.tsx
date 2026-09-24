@@ -7,7 +7,7 @@ type OffersListProps = {
   offers: Offers;
 };
 
-function OffersSection({offers}: OffersListProps) {
+function OffersSection({offers}: OffersListProps): JSX.Element {
   const [, setActiveOffer] = useState<Nullable<Offer>>(null);
 
   const handleOfferHover = (offer?: Offer) => {
