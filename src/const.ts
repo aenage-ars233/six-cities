@@ -1,5 +1,5 @@
 enum Setting {
-  offersCount = 5,
+  offersCount = 4,
 }
 
 enum AppRoute {
