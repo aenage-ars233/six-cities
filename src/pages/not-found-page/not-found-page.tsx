@@ -10,7 +10,7 @@ function NotFoundPage(): JSX.Element {
       </Helmet>
 
       <main className="page__main" style={{textAlign: 'center', paddingTop: '200px'}}>
-        <h1>404. Page not found</h1>
+        <h1>404. not found</h1>
         <Link to={AppRoute.Main} style={{color: '#4481c3', fontSize: '24px'}}>Main Page</Link>
       </main>
     </div>
