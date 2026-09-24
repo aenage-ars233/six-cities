@@ -235,7 +235,7 @@ function OfferPage({offers}: OfferPageProps): JSX.Element {
         </div>
       </main>
     </div>
-  ) : <NotFoundPage />;
+  ) : <NotFoundPage type='offer' />;
 }
 
 export default OfferPage;
