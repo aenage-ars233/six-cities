@@ -1,6 +1,6 @@
 type HouseType = 'apartment' | 'room' | 'house' | 'hotel';
 
-type CityName = 'Amsterdam' | 'Paris' | 'Cologne' | 'Brussels' | 'Hamburg' | 'Dusseldorf';
+export type CityName = 'Amsterdam' | 'Paris' | 'Cologne' | 'Brussels' | 'Hamburg' | 'Dusseldorf';
 
 type Location = {
   latitude: number;
