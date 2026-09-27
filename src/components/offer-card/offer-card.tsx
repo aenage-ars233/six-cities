@@ -1,12 +1,14 @@
+import cn from 'classnames';
 import {Offer} from '../../types/offers';
 import {Link} from 'react-router-dom';
 
 type OfferCardProps = {
   offer: Offer;
   onHover: (offer?: Offer) => void;
+  offerType: 'city' | 'nearest';
 };
 
-function OfferCard({offer, onHover}: OfferCardProps): JSX.Element {
+function OfferCard({offer, onHover, offerType}: OfferCardProps): JSX.Element {
   const { id, isPremium, previewImage, price, rating, title, type } = offer;
 
   const handleMouseEnter = () => {
@@ -19,12 +21,22 @@ function OfferCard({offer, onHover}: OfferCardProps): JSX.Element {
 
   return (
     <Link to={`/offer/${id}`}>
-      <article className="cities__card place-card" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <article className={cn(
+        'place-card',
+        {'cities__card': offerType === 'city'},
+        {'near-places__card': offerType === 'nearest'}
+      )} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}
+      >
         {isPremium &&
         <div className="place-card__mark">
           <span>Premium</span>
         </div>}
-        <div className="cities__image-wrapper place-card__image-wrapper">
+        <div className={cn(
+          'place-card__image-wrapper',
+          {'cities__image-wrapper': offerType === 'city'},
+          {'near-places__image-wrapper': offerType === 'nearest'}
+        )}
+        >
           <a href="#">
             <img className="place-card__image" src={previewImage} width="260" height="200" alt="Place image" />
           </a>
