@@ -8,12 +8,14 @@ import OfferPage from '../../pages/offer-page/offer-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import PrivateRoute from '../private-route/private-route';
 import {Offers} from '../../types/offers';
+import {Reviews} from '../../types/reviews';
 
 type AppProps = {
   offers: Offers;
+  reviews: Reviews;
 };
 
-function App({offers}: AppProps): JSX.Element {
+function App({offers, reviews}: AppProps): JSX.Element {
   return (
     <HelmetProvider>
       <BrowserRouter>
@@ -36,7 +38,7 @@ function App({offers}: AppProps): JSX.Element {
           />
           <Route
             path={AppRoute.Offer}
-            element={<OfferPage offers={offers} />}
+            element={<OfferPage offers={offers} reviews={reviews} />}
           />
           <Route
             path="*"
