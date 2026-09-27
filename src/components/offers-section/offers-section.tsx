@@ -1,10 +1,18 @@
 import {useState} from 'react';
 import {Offers, Offer} from '../../types/offers';
 import OfferCard from '../offer-card/offer-card';
+import Map from '../map/map';
 import { Nullable } from 'vitest';
 
 type OffersListProps = {
   offers: Offers;
+};
+
+const CITY = {
+  title: 'Amsterdam',
+  lat: 52.3909553943508,
+  lng: 4.85309666406198,
+  zoom: 8,
 };
 
 function OffersSection({offers}: OffersListProps): JSX.Element {
@@ -42,7 +50,7 @@ function OffersSection({offers}: OffersListProps): JSX.Element {
           </div>
         </section>
         <div className="cities__right-section">
-          <section className="cities__map map"></section>
+          <Map city={CITY} />
         </div>
       </div>
     </div>
