@@ -50,7 +50,7 @@ function OffersSection({offers}: OffersListProps): JSX.Element {
           </div>
         </section>
         <div className="cities__right-section">
-          <Map city={CITY} />
+          <Map city={CITY} offers={offers} className='cities__map' />
         </div>
       </div>
     </div>

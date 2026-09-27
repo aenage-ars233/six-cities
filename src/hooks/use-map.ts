@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, RefObject} from 'react';
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Nullable } from 'vitest';
@@ -10,7 +10,7 @@ type City = {
   zoom: number;
 };
 
-function useMap(mapRef: {current: HTMLElement}, city: City) {
+function useMap(mapRef: RefObject<null>, city: City) {
   const [map, setMap] = useState<Nullable<leaflet.Map>>(null);
   const isRenderedRef = useRef(false);
 
