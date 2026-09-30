@@ -1,8 +1,10 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Offers, Offer, City} from '../../types/offers';
+import Sorting, {SortType} from '../sorting/sorting';
 import OfferCard from '../offer-card/offer-card';
 import Map from '../map/map';
 import { Nullable } from 'vitest';
+import {SortingType} from '../../const';
 
 type OffersListProps = {
   offers: Offers;
@@ -11,12 +13,53 @@ type OffersListProps = {
 
 function OffersSection({offers, city}: OffersListProps): JSX.Element {
   const [, setActiveOffer] = useState<Nullable<Offer>>(null);
+  const [sorting, setSorting] = useState({
+    currentType: SortingType.Default,
+    offers: offers,
+  });
 
   const isEmpty = offers.length === 0;
+  const sourcedOffers = structuredClone(offers);
 
   const handleOfferHover = (offer?: Offer) => {
     setActiveOffer(offer || null);
   };
+
+  const handleSortingTypeChange = (sortingType: SortType) => {
+    switch(sortingType) {
+      case SortingType.Default:
+        setSorting({
+          currentType: SortingType.Default,
+          offers: offers,
+        });
+        return null;
+      case SortingType.PriceLow:
+        setSorting({
+          currentType: SortingType.PriceLow,
+          offers: sourcedOffers.sort((aOffer, bOffer) => aOffer.price - bOffer.price),
+        });
+        return null;
+      case SortingType.PriceHigh:
+        setSorting({
+          currentType: SortingType.PriceHigh,
+          offers: sourcedOffers.sort((aOffer, bOffer) => bOffer.price - aOffer.price),
+        });
+        return null;
+      case SortingType.Rating:
+        setSorting({
+          currentType: SortingType.Rating,
+          offers: sourcedOffers.sort((aOffer, bOffer) => bOffer.rating - aOffer.rating),
+        });
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    setSorting({
+      currentType: SortingType.Default,
+      offers
+    });
+  }, [city, offers]);
 
   return !isEmpty ? (
     <div className="cities">
@@ -24,24 +67,10 @@ function OffersSection({offers, city}: OffersListProps): JSX.Element {
         <section className="cities__places places">
           <h2 className="visually-hidden">Places</h2>
           <b className="places__found">{offers.length} places to stay in {city.name}</b>
-          <form className="places__sorting" action="#" method="get">
-            <span className="places__sorting-caption">Sort by</span>
-            <span className="places__sorting-type" tabIndex={0}>
-              Popular
-              <svg className="places__sorting-arrow" width="7" height="4">
-                <use xlinkHref="#icon-arrow-select"></use>
-              </svg>
-            </span>
-            <ul className="places__options places__options--custom places__options--opened">
-              <li className="places__option places__option--active" tabIndex={0}>Popular</li>
-              <li className="places__option" tabIndex={0}>Price: low to high</li>
-              <li className="places__option" tabIndex={0}>Price: high to low</li>
-              <li className="places__option" tabIndex={0}>Top rated first</li>
-            </ul>
-          </form>
+          <Sorting currentType={sorting.currentType} onChange={handleSortingTypeChange} />
           <div className="cities__places-list places__list tabs__content">
             {
-              offers.map((offer) => <OfferCard key={offer.id} offer={offer} onHover={handleOfferHover} offerType='city' />)
+              sorting.offers.map((offer) => <OfferCard key={offer.id} offer={offer} onHover={handleOfferHover} offerType='city' />)
             }
           </div>
         </section>

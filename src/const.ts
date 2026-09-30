@@ -67,4 +67,11 @@ const CITIES: readonly City[] = [
   },
 ];
 
-export {AppRoute, AuthorizationStatus, URL_MARKER_ACTIVE, URL_MARKER_DEFAULT, CITIES};
+enum SortingType {
+  Default = 'POPULAR',
+  PriceLow = 'CHEAP',
+  PriceHigh = 'EXPENSIVE',
+  Rating = 'RATING',
+}
+
+export {AppRoute, AuthorizationStatus, URL_MARKER_ACTIVE, URL_MARKER_DEFAULT, CITIES, SortingType};
