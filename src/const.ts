@@ -1,3 +1,5 @@
+import {CityName} from './types/offers';
+
 enum AppRoute {
   Main = '/',
   Login = '/login',
@@ -14,4 +16,6 @@ enum AuthorizationStatus {
 const URL_MARKER_DEFAULT = '/img/pin.svg';
 const URL_MARKER_ACTIVE = '/img/pin-active.svg';
 
-export {AppRoute, AuthorizationStatus, URL_MARKER_ACTIVE, URL_MARKER_DEFAULT};
+const CITIES: readonly CityName[] = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
+
+export {AppRoute, AuthorizationStatus, URL_MARKER_ACTIVE, URL_MARKER_DEFAULT, CITIES};
