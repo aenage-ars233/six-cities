@@ -1,21 +1,15 @@
 import {useState} from 'react';
-import {Offers, Offer} from '../../types/offers';
+import {Offers, Offer, City} from '../../types/offers';
 import OfferCard from '../offer-card/offer-card';
 import Map from '../map/map';
 import { Nullable } from 'vitest';
 
 type OffersListProps = {
   offers: Offers;
+  city: City;
 };
 
-const CITY = {
-  title: 'Amsterdam',
-  lat: 52.3909553943508,
-  lng: 4.85309666406198,
-  zoom: 8,
-};
-
-function OffersSection({offers}: OffersListProps): JSX.Element {
+function OffersSection({offers, city}: OffersListProps): JSX.Element {
   const [, setActiveOffer] = useState<Nullable<Offer>>(null);
 
   const handleOfferHover = (offer?: Offer) => {
@@ -27,7 +21,7 @@ function OffersSection({offers}: OffersListProps): JSX.Element {
       <div className="cities__places-container container">
         <section className="cities__places places">
           <h2 className="visually-hidden">Places</h2>
-          <b className="places__found">{offers.length} places to stay in Amsterdam</b>
+          <b className="places__found">{offers.length} places to stay in {city.name}</b>
           <form className="places__sorting" action="#" method="get">
             <span className="places__sorting-caption">Sort by</span>
             <span className="places__sorting-type" tabIndex={0}>
@@ -50,7 +44,7 @@ function OffersSection({offers}: OffersListProps): JSX.Element {
           </div>
         </section>
         <div className="cities__right-section">
-          <Map city={CITY} offers={offers} className='cities__map' />
+          <Map city={city} offers={offers} className='cities__map' />
         </div>
       </div>
     </div>

@@ -1,12 +1,16 @@
-import {Offers} from '../../types/offers';
+import {City} from '../../types/offers';
 import Header from '../../components/header/header';
 import OffersSection from '../../components/offers-section/offers-section';
+import {useAppSelector} from '../../hooks/store';
+import {CITIES} from '../../const';
 
-type MainPageProps = {
-  offers: Offers;
-};
+function MainPage(): JSX.Element {
+  const offers = useAppSelector((state) => state.offers);
+  const currentCity = useAppSelector((state) => state.city);
+  const currentCityData = CITIES.find((city) => city.name === currentCity);
 
-function MainPage({offers}: MainPageProps): JSX.Element {
+  const currentOffers = offers.filter((offer) => offer.city.name === currentCity);
+
   return (
     <div className="page page--gray page--main">
       <Header />
@@ -49,7 +53,7 @@ function MainPage({offers}: MainPageProps): JSX.Element {
             </ul>
           </section>
         </div>
-        <OffersSection offers={offers} />
+        <OffersSection offers={currentOffers} city={currentCityData as City} />
       </main>
     </div>
   );

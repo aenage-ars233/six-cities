@@ -3,15 +3,10 @@ import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useMap from '../../hooks/use-map';
 import {URL_MARKER_DEFAULT} from '../../const';
-import {Offers} from '../../types/offers';
+import {City, Offers} from '../../types/offers';
 
 type MapProps = {
-  city: {
-    title: string;
-    lat: number;
-    lng: number;
-    zoom: number;
-  };
+  city: City;
   offers: Offers;
   className?: string;
 };

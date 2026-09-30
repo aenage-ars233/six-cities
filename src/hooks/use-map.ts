@@ -2,13 +2,7 @@ import {useState, useEffect, useRef, RefObject} from 'react';
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Nullable } from 'vitest';
-
-type City = {
-  title: string;
-  lat: number;
-  lng: number;
-  zoom: number;
-};
+import {City} from '../types/offers';
 
 function useMap(mapRef: RefObject<null>, city: City) {
   const [map, setMap] = useState<Nullable<leaflet.Map>>(null);
@@ -18,10 +12,10 @@ function useMap(mapRef: RefObject<null>, city: City) {
     if (mapRef.current !== null && !isRenderedRef.current) {
       const instance = leaflet.map(mapRef.current, {
         center: {
-          lat: city.lat,
-          lng: city.lng,
+          lat: city.location.latitude,
+          lng: city.location.longitude,
         },
-        zoom: city.zoom,
+        zoom: city.location.zoom,
       });
 
       leaflet.tileLayer(
