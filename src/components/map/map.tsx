@@ -13,6 +13,7 @@ type MapProps = {
 
 function Map({city, offers, className}: MapProps): JSX.Element {
   const mapRef = useRef(null);
+  const markerLayerRef = useRef<leaflet.LayerGroup | null>(null);
   const map = useMap(mapRef, city);
 
   const defaultCustomIcon = leaflet.icon({
@@ -22,17 +23,23 @@ function Map({city, offers, className}: MapProps): JSX.Element {
   });
 
   useEffect(() => {
-    if (map) {
-      offers.forEach(({location}) => {
-        leaflet.marker({
-          lat: location.latitude,
-          lng: location.longitude,
-        }, {
-          icon: defaultCustomIcon,
-        }).addTo(map);
-      });
+    if (!map) {
+      return;
     }
-  }, [map, offers, defaultCustomIcon]);
+
+    const markerLayer = markerLayerRef.current ?? leaflet.layerGroup().addTo(map);
+    markerLayer.clearLayers();
+    markerLayerRef.current = markerLayer;
+
+    offers.forEach(({location}) => {
+      leaflet.marker({
+        lat: location.latitude,
+        lng: location.longitude,
+      }, {
+        icon: defaultCustomIcon,
+      }).addTo(markerLayer);
+    });
+  }, [map, city, offers, defaultCustomIcon]);
 
   return (
     <section className={`${className || ''} map`} ref={mapRef}></section>

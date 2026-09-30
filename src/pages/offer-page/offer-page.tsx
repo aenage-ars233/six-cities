@@ -6,25 +6,22 @@ import ReviewForm from '../../components/review-form/review-form';
 import Map from '../../components/map/map';
 import OfferCard from '../../components/offer-card/offer-card';
 import NotFoundPage from '../not-found-page/not-found-page';
-import {Offers} from '../../types/offers';
+import {City, Offers} from '../../types/offers';
 import {Reviews} from '../../types/reviews';
 import {nearestOffers} from '../../mocks/nearest-offers';
+import {useAppSelector} from '../../hooks/store';
+import {CITIES} from '../../const';
 
 type OfferPageProps = {
   offers: Offers;
   reviews: Reviews;
 };
 
-const CITY = {
-  title: 'Amsterdam',
-  lat: 52.3909553943508,
-  lng: 4.85309666406198,
-  zoom: 8,
-};
-
 function OfferPage({offers, reviews}: OfferPageProps): JSX.Element {
   const { id } = useParams();
   const foundOffer = offers.find((offer) => offer.id === id);
+  const currentCity = useAppSelector((state) => state.city);
+  const currentCityData = CITIES.find((city) => city.name === currentCity);
 
   return foundOffer ? (
     <div className="page">
@@ -116,7 +113,7 @@ function OfferPage({offers, reviews}: OfferPageProps): JSX.Element {
               </section>
             </div>
           </div>
-          <Map city={CITY} offers={nearestOffers} className='offer__map' />
+          <Map city={currentCityData as City} offers={nearestOffers} className='offer__map' />
         </section>
         <div className="container">
           <section className="near-places places">
