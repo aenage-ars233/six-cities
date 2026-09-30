@@ -12,7 +12,7 @@ type OffersListProps = {
 };
 
 function OffersSection({offers, city}: OffersListProps): JSX.Element {
-  const [, setActiveOffer] = useState<Nullable<Offer>>(null);
+  const [activeOffer, setActiveOffer] = useState<Nullable<Offer>>(null);
   const [sorting, setSorting] = useState({
     currentType: SortingType.Default,
     offers: offers,
@@ -75,7 +75,7 @@ function OffersSection({offers, city}: OffersListProps): JSX.Element {
           </div>
         </section>
         <div className="cities__right-section">
-          <Map city={city} offers={offers} className='cities__map' />
+          <Map city={city} offers={offers} activeOffer={activeOffer} className='cities__map' />
         </div>
       </div>
     </div>
