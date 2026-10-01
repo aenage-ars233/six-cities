@@ -9,6 +9,7 @@ enum AppRoute {
 
 enum APIRoute {
   Offers = '/offers',
+  Login = '/login',
 }
 
 enum AuthorizationStatus {
