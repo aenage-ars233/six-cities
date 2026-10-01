@@ -9,7 +9,7 @@ import {Nullable} from 'vitest';
 type MapProps = {
   city: City;
   offers: Offers;
-  activeOffer: Nullable<Offer>;
+  activeOffer?: Nullable<Offer>;
   className?: string;
 };
 
