@@ -7,6 +7,10 @@ enum AppRoute {
   Offer = '/offer/:id',
 }
 
+enum APIRoute {
+  Offers = '/offers',
+}
+
 enum AuthorizationStatus {
   Auth = 'AUTH',
   NoAuth = 'NO_AUTH',
@@ -74,4 +78,4 @@ enum SortingType {
   Rating = 'RATING',
 }
 
-export {AppRoute, AuthorizationStatus, URL_MARKER_ACTIVE, URL_MARKER_DEFAULT, CITIES, SortingType};
+export {AppRoute, APIRoute, AuthorizationStatus, URL_MARKER_ACTIVE, URL_MARKER_DEFAULT, CITIES, SortingType};
