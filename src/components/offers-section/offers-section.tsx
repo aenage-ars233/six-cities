@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {Offers, Offer, City} from '../../types/offers';
-import Sorting, {SortType} from '../sorting/sorting';
+import Sorting from '../sorting/sorting';
 import OfferCard from '../offer-card/offer-card';
 import Map from '../map/map';
 import { Nullable } from 'vitest';
@@ -25,7 +25,7 @@ function OffersSection({offers, city}: OffersListProps): JSX.Element {
     setActiveOffer(offer || null);
   };
 
-  const handleSortingTypeChange = (sortingType: SortType) => {
+  const handleSortingTypeChange = (sortingType: SortingType) => {
     switch(sortingType) {
       case SortingType.Default:
         setSorting({

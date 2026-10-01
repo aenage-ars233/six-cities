@@ -1,11 +1,9 @@
 import {useState} from 'react';
 import {SortingType} from '../../const';
 
-export type SortType = SortingType.Default | SortingType.PriceLow | SortingType.PriceHigh | SortingType.Rating;
-
 type SortingProps = {
-  currentType: SortType;
-  onChange: (sortingType: SortType) => void;
+  currentType: SortingType;
+  onChange: (sortingType: SortingType) => void;
 };
 
 const sorting = [
@@ -30,7 +28,7 @@ const sorting = [
 function Sorting({currentType, onChange}: SortingProps): JSX.Element {
   const [isOpened, setIsOpened] = useState(false);
 
-  const hangleSortingTypeChange = (sortType: SortType) => {
+  const hangleSortingTypeChange = (sortType: SortingType) => {
     onChange(sortType);
     setIsOpened(false);
   };
