@@ -32,12 +32,6 @@ export type Offer = {
   isPremium: boolean;
   rating: Rating;
   previewImage: string;
-  description: string;
-  bedrooms: number;
-  goods: string[];
-  host: Host;
-  images: string[];
-  maxAdults: number;
 };
 
 export type Offers = Offer[];
