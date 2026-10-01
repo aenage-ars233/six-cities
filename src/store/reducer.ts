@@ -9,6 +9,7 @@ type OffersState = {
   offers: Offers;
   isOffersDataLoading: boolean;
   authorizationStatus: AuthorizationStatus;
+  userData: UserData | null;
 };
 
 const initialState: OffersState = {
@@ -16,6 +17,7 @@ const initialState: OffersState = {
   offers: [],
   isOffersDataLoading: false,
   authorizationStatus: AuthorizationStatus.Unknown,
+  userData: null,
 };
 
 const reducer = createReducer(initialState, (builder) => {
@@ -31,6 +33,9 @@ const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(requireAuthorization, (state, action) => {
       state.authorizationStatus = action.payload;
+    })
+    .addCase(setUserData, (state, action) => {
+      state.userData = action.payload;
     });
 });
 
