@@ -60,6 +60,7 @@ function ReviewForm({onSubmit}: ReviewFormProps): JSX.Element {
         name="comment"
         value={review.comment}
         placeholder="Tell how was your stay, what you like and what can be improved"
+        maxLength={300}
         onChange={handleReviewChange}
       >
       </textarea>

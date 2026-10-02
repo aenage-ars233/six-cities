@@ -12,11 +12,12 @@ import ScrollToTop from '../../components/scroll-to-top/scroll-to-top';
 import {City, Offers, OfferInfo} from '../../types/offers';
 import {Reviews} from '../../types/reviews';
 import {useAppSelector} from '../../hooks/store';
-import {CITIES, APIRoute} from '../../const';
+import {CITIES, APIRoute, AuthorizationStatus} from '../../const';
 import { Nullable } from 'vitest';
 import {createAPI} from '../../services/api';
 
 function OfferPage(): JSX.Element {
+  const [isNeedScroll, setIsNeedScroll] = useState(false);
   const [isFound, setIsFound] = useState(true);
   const [foundOffer, setFoundOffer] = useState<Nullable<OfferInfo>>(null);
   const [reviews, setReviews] = useState<Nullable<Reviews>>(null);
@@ -25,16 +26,21 @@ function OfferPage(): JSX.Element {
   const { id } = useParams();
   const currentCity = useAppSelector((state) => state.city);
   const currentCityData = CITIES.find((city) => city.name === currentCity);
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
 
   const handleReviewSubmit = (newComment: FormData) => {
     const api = createAPI();
 
     api.post(`${APIRoute.Comments}/${id}`, newComment)
-      .then(({data}) => setReviews(reviews?.concat([data])));
+      .then(({data}) => {
+        setReviews(reviews?.concat([data]));
+        setIsNeedScroll(false);
+      });
   };
 
   useEffect(() => {
     const api = createAPI();
+    setIsNeedScroll(true);
 
     api.get(`${APIRoute.Offers}/${id}`)
       .then(({data}) => setFoundOffer(data as OfferInfo))
@@ -59,7 +65,7 @@ function OfferPage(): JSX.Element {
 
       <Header />
 
-      <ScrollToTop />
+      {isNeedScroll && <ScrollToTop />}
       <main className="page__main page__main--offer">
         <section className="offer">
           <div className="offer__gallery-container container">
@@ -138,7 +144,7 @@ function OfferPage(): JSX.Element {
               <section className="offer__reviews reviews">
                 <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
                 <ReviewsList reviews={reviews} />
-                <ReviewForm onSubmit={handleReviewSubmit} />
+                {authorizationStatus === AuthorizationStatus.Auth && <ReviewForm onSubmit={handleReviewSubmit} />}
               </section>
             </div>
           </div>
