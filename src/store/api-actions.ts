@@ -1,5 +1,6 @@
 import {AxiosInstance} from 'axios';
 import {createAsyncThunk} from '@reduxjs/toolkit';
+import {toast} from 'react-toastify';
 import {AppDispatch, RootState} from '../types/store';
 import {Offers} from '../types/offers';
 import {AuthData} from '../types/auth-data';
@@ -16,9 +17,15 @@ export const fetchOffersAction = createAsyncThunk<void, undefined, {
   'data/fetchOffers',
   async (_arg, {dispatch, extra: api}) => {
     dispatch(setOffersDataLoadingStatus(true));
-    const {data} = await api.get<Offers>(APIRoute.Offers);
-    dispatch(setOffersDataLoadingStatus(false));
-    dispatch(setOffers(data));
+
+    try {
+      const {data} = await api.get<Offers>(APIRoute.Offers);
+      dispatch(setOffers(data));
+    } catch {
+      toast.error('Failed to load offers!');
+    } finally {
+      dispatch(setOffersDataLoadingStatus(false));
+    }
   },
 );
 
@@ -46,10 +53,14 @@ export const loginAction = createAsyncThunk<void, AuthData, {
 }>(
   'user/login',
   async ({email, password}, {dispatch, extra: api}) => {
-    const {data} = await api.post<UserData>(APIRoute.Login, {email, password});
-    saveToken(data.token);
-    dispatch(requireAuthorization(AuthorizationStatus.Auth));
-    dispatch(setUserData(data));
+    try {
+      const {data} = await api.post<UserData>(APIRoute.Login, {email, password});
+      saveToken(data.token);
+      dispatch(requireAuthorization(AuthorizationStatus.Auth));
+      dispatch(setUserData(data));
+    } catch {
+      toast.error('Login failed!');
+    }
   },
 );
 
@@ -60,9 +71,13 @@ export const logoutAction = createAsyncThunk<void, undefined, {
 }>(
   'user/logout',
   async (_arg, {dispatch, extra: api}) => {
-    await api.delete(APIRoute.Logout);
-    dropToken();
-    dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
-    dispatch(setUserData(null));
+    try {
+      await api.delete(APIRoute.Logout);
+      dropToken();
+      dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
+      dispatch(setUserData(null));
+    } catch {
+      toast.error('Logout failed!');
+    }
   },
 );

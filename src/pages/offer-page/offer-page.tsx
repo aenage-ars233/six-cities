@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import {Helmet} from 'react-helmet-async';
+import {toast} from 'react-toastify';
 import Header from '../../components/header/header';
 import ReviewsList from '../../components/reviews-list/reviews-list';
 import ReviewForm, {FormData} from '../../components/review-form/review-form';
@@ -9,7 +10,7 @@ import OfferCard from '../../components/offer-card/offer-card';
 import NotFoundPage from '../not-found-page/not-found-page';
 import Loader from '../../components/loader/loader';
 import ScrollToTop from '../../components/scroll-to-top/scroll-to-top';
-import {City, Offers, OfferInfo} from '../../types/offers';
+import {City, Offers, OfferInfo, Offer} from '../../types/offers';
 import {Reviews, Review} from '../../types/reviews';
 import {useAppSelector} from '../../hooks/store';
 import {CITIES, APIRoute, AuthorizationStatus} from '../../const';
@@ -28,6 +29,9 @@ function OfferPage(): JSX.Element {
 
   const currentCity = useAppSelector((state) => state.city);
   const currentCityData = CITIES.find((city) => city.name === currentCity);
+  const currentOffer = useAppSelector((state) => state.offers).find((offer) => offer.id === id);
+  const offersForMap = nearestOffers?.slice(0, 3);
+  offersForMap?.push(currentOffer as Offer);
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
 
   const handleReviewSubmit = async (newComment: FormData): Promise<boolean> => {
@@ -41,6 +45,7 @@ function OfferPage(): JSX.Element {
         setReviews(reviews?.concat([data]));
         return true;
       } catch {
+        toast.error('Failed to submit new comment!');
         return false;
       }
     } finally {
@@ -54,13 +59,17 @@ function OfferPage(): JSX.Element {
 
     api.get(`${APIRoute.Offers}/${id}`)
       .then(({data}) => setFoundOffer(data as OfferInfo))
-      .catch(() => setIsFound(false));
+      .catch(() => {
+        setIsFound(false);
+      });
 
     api.get(`${APIRoute.Comments}/${id}`)
-      .then(({data}) => setReviews(data as Reviews));
+      .then(({data}) => setReviews(data as Reviews))
+      .catch(() => toast.error('Failed to load comments!'));
 
     api.get(`${APIRoute.Offers}/${id}/nearby`)
-      .then(({data}) => setNearestOffers(data as Offers));
+      .then(({data}) => setNearestOffers(data as Offers))
+      .catch(() => toast.error('Failed to load nearest offers!'));
   }, [id]);
 
   if (!isFound) {
@@ -163,7 +172,7 @@ function OfferPage(): JSX.Element {
               </section>
             </div>
           </div>
-          <Map city={currentCityData as City} offers={nearestOffers} className='offer__map' />
+          <Map city={currentCityData as City} offers={offersForMap as Offers} activeOffer={currentOffer} className='offer__map' />
         </section>
         <div className="container">
           <section className="near-places places">
