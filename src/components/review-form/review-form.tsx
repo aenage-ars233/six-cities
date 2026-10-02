@@ -8,7 +8,8 @@ export type FormData = {
 };
 
 type ReviewFormProps = {
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: FormData) => Promise<boolean>;
+  isDisabled: boolean;
 };
 
 const rating = [
@@ -19,7 +20,7 @@ const rating = [
   {value: 1, label: 'terribly'},
 ];
 
-function ReviewForm({onSubmit}: ReviewFormProps): JSX.Element {
+function ReviewForm({onSubmit, isDisabled}: ReviewFormProps): JSX.Element {
   const [review, setReview] = useState<FormData>({rating: 0, comment: ''});
 
   const handleReviewChange: ChangeHandler = (evt) => {
@@ -27,13 +28,23 @@ function ReviewForm({onSubmit}: ReviewFormProps): JSX.Element {
     setReview({...review, [name]: name === 'rating' ? Number(value) : value});
   };
 
-  const handleSubmit = (evt: FormEvent) => {
+  const handleSubmit = async (evt: FormEvent) => {
     evt.preventDefault();
-    onSubmit(review);
+    const isSubmitted = await onSubmit(review);
+    if (isSubmitted) {
+      setReview({rating: 0, comment: ''});
+    }
   };
 
   return (
-    <form className="reviews__form form" action="#" method="post" onSubmit={handleSubmit}>
+    <form
+      className="reviews__form form"
+      action="#"
+      method="post"
+      onSubmit={(evt) => {
+        void handleSubmit(evt);
+      }}
+    >
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
         {rating.map(({value, label}) => (
@@ -42,8 +53,10 @@ function ReviewForm({onSubmit}: ReviewFormProps): JSX.Element {
               className="form__rating-input visually-hidden"
               name="rating"
               value={value}
+              checked={review.rating === value}
               id={`${value}-stars`}
               type="radio"
+              disabled={isDisabled}
               onChange={handleReviewChange}
             />
             <label htmlFor={`${value}-stars`} className="reviews__rating-label form__rating-label" title={label}>
@@ -61,6 +74,7 @@ function ReviewForm({onSubmit}: ReviewFormProps): JSX.Element {
         value={review.comment}
         placeholder="Tell how was your stay, what you like and what can be improved"
         maxLength={300}
+        disabled={isDisabled}
         onChange={handleReviewChange}
       >
       </textarea>
@@ -71,7 +85,7 @@ function ReviewForm({onSubmit}: ReviewFormProps): JSX.Element {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={review.comment.length < 50 || review.rating === 0}
+          disabled={review.comment.length < 50 || review.rating === 0 || isDisabled}
         >
             Submit
         </button>

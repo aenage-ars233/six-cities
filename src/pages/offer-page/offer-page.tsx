@@ -10,32 +10,42 @@ import NotFoundPage from '../not-found-page/not-found-page';
 import Loader from '../../components/loader/loader';
 import ScrollToTop from '../../components/scroll-to-top/scroll-to-top';
 import {City, Offers, OfferInfo} from '../../types/offers';
-import {Reviews} from '../../types/reviews';
+import {Reviews, Review} from '../../types/reviews';
 import {useAppSelector} from '../../hooks/store';
 import {CITIES, APIRoute, AuthorizationStatus} from '../../const';
-import { Nullable } from 'vitest';
+import {Nullable} from 'vitest';
 import {createAPI} from '../../services/api';
 
 function OfferPage(): JSX.Element {
   const [isNeedScroll, setIsNeedScroll] = useState(false);
   const [isFound, setIsFound] = useState(true);
+  const [isDisabledReviewForm, setDisabledReviewForm] = useState(false);
   const [foundOffer, setFoundOffer] = useState<Nullable<OfferInfo>>(null);
   const [reviews, setReviews] = useState<Nullable<Reviews>>(null);
   const [nearestOffers, setNearestOffers] = useState<Nullable<Offers>>(null);
 
   const { id } = useParams();
+
   const currentCity = useAppSelector((state) => state.city);
   const currentCityData = CITIES.find((city) => city.name === currentCity);
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
 
-  const handleReviewSubmit = (newComment: FormData) => {
+  const handleReviewSubmit = async (newComment: FormData): Promise<boolean> => {
     const api = createAPI();
+    setIsNeedScroll(false);
+    setDisabledReviewForm(true);
 
-    api.post(`${APIRoute.Comments}/${id}`, newComment)
-      .then(({data}) => {
+    try {
+      try {
+        const { data } = await api.post<Review>(`${APIRoute.Comments}/${id}`, newComment);
         setReviews(reviews?.concat([data]));
-        setIsNeedScroll(false);
-      });
+        return true;
+      } catch {
+        return false;
+      }
+    } finally {
+      setDisabledReviewForm(false);
+    }
   };
 
   useEffect(() => {
@@ -144,7 +154,12 @@ function OfferPage(): JSX.Element {
               <section className="offer__reviews reviews">
                 <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
                 <ReviewsList reviews={reviews} />
-                {authorizationStatus === AuthorizationStatus.Auth && <ReviewForm onSubmit={handleReviewSubmit} />}
+                {authorizationStatus === AuthorizationStatus.Auth &&
+                <ReviewForm
+                  key={id}
+                  onSubmit={handleReviewSubmit}
+                  isDisabled={isDisabledReviewForm}
+                />}
               </section>
             </div>
           </div>
