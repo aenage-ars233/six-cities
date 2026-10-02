@@ -3,7 +3,7 @@ import {useParams} from 'react-router-dom';
 import {Helmet} from 'react-helmet-async';
 import Header from '../../components/header/header';
 import ReviewsList from '../../components/reviews-list/reviews-list';
-import ReviewForm from '../../components/review-form/review-form';
+import ReviewForm, {FormData} from '../../components/review-form/review-form';
 import Map from '../../components/map/map';
 import OfferCard from '../../components/offer-card/offer-card';
 import NotFoundPage from '../not-found-page/not-found-page';
@@ -25,6 +25,13 @@ function OfferPage(): JSX.Element {
   const { id } = useParams();
   const currentCity = useAppSelector((state) => state.city);
   const currentCityData = CITIES.find((city) => city.name === currentCity);
+
+  const handleReviewSubmit = (newComment: FormData) => {
+    const api = createAPI();
+
+    api.post(`${APIRoute.Comments}/${id}`, newComment)
+      .then(({data}) => setReviews(reviews?.concat([data])));
+  };
 
   useEffect(() => {
     const api = createAPI();
@@ -96,7 +103,7 @@ function OfferPage(): JSX.Element {
                   {foundOffer.bedrooms} Bedrooms
                 </li>
                 <li className="offer__feature offer__feature--adults">
-                  Max {foundOffer.maxAdults} adults
+                  Max {foundOffer.maxAdults} adult{foundOffer.maxAdults > 1 && 's'}
                 </li>
               </ul>
               <div className="offer__price">
@@ -131,7 +138,7 @@ function OfferPage(): JSX.Element {
               <section className="offer__reviews reviews">
                 <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
                 <ReviewsList reviews={reviews} />
-                <ReviewForm />
+                <ReviewForm onSubmit={handleReviewSubmit} />
               </section>
             </div>
           </div>

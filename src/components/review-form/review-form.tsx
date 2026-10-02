@@ -1,6 +1,15 @@
-import {Fragment, ReactEventHandler, useState} from 'react';
+import {Fragment, ReactEventHandler, FormEvent, useState} from 'react';
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+
+export type FormData = {
+  rating: number;
+  comment: string;
+};
+
+type ReviewFormProps = {
+  onSubmit: (data: FormData) => void;
+};
 
 const rating = [
   {value: 5, label: 'perfect'},
@@ -10,16 +19,21 @@ const rating = [
   {value: 1, label: 'terribly'},
 ];
 
-function ReviewForm(): JSX.Element {
-  const [review, setReview] = useState({rating: 0, review: ''});
+function ReviewForm({onSubmit}: ReviewFormProps): JSX.Element {
+  const [review, setReview] = useState<FormData>({rating: 0, comment: ''});
 
   const handleReviewChange: ChangeHandler = (evt) => {
     const { name, value } = evt.currentTarget;
-    setReview({...review, [name]: value});
+    setReview({...review, [name]: name === 'rating' ? Number(value) : value});
+  };
+
+  const handleSubmit = (evt: FormEvent) => {
+    evt.preventDefault();
+    onSubmit(review);
   };
 
   return (
-    <form className="reviews__form form" action="#" method="post">
+    <form className="reviews__form form" action="#" method="post" onSubmit={handleSubmit}>
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
         {rating.map(({value, label}) => (
@@ -43,8 +57,8 @@ function ReviewForm(): JSX.Element {
       <textarea
         className="reviews__textarea form__textarea"
         id="review"
-        name="review"
-        value={review.review}
+        name="comment"
+        value={review.comment}
         placeholder="Tell how was your stay, what you like and what can be improved"
         onChange={handleReviewChange}
       >
@@ -56,7 +70,7 @@ function ReviewForm(): JSX.Element {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={review.review.length < 50 || review.rating === 0}
+          disabled={review.comment.length < 50 || review.rating === 0}
         >
             Submit
         </button>

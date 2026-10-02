@@ -35,7 +35,7 @@ function getMonth(monthNumber: number) {
 
 function ReviewItem({review}: ReviewItemProps): JSX.Element {
   const reviewDate = new Date(review.date);
-  const reviewMonth = getMonth(reviewDate.getMonth());
+  const reviewMonth = getMonth(reviewDate.getMonth() + 1);
 
   return (
     <li className="reviews__item">
