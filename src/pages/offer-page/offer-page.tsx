@@ -1,3 +1,4 @@
+import {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import {Helmet} from 'react-helmet-async';
 import Header from '../../components/header/header';
@@ -6,24 +7,44 @@ import ReviewForm from '../../components/review-form/review-form';
 import Map from '../../components/map/map';
 import OfferCard from '../../components/offer-card/offer-card';
 import NotFoundPage from '../not-found-page/not-found-page';
-import {City, Offers} from '../../types/offers';
+import Loader from '../../components/loader/loader';
+import ScrollToTop from '../../components/scroll-to-top/scroll-to-top';
+import {City, Offers, OfferInfo} from '../../types/offers';
 import {Reviews} from '../../types/reviews';
-import {nearestOffers} from '../../mocks/nearest-offers';
 import {useAppSelector} from '../../hooks/store';
-import {CITIES} from '../../const';
+import {CITIES, APIRoute} from '../../const';
+import { Nullable } from 'vitest';
+import {createAPI} from '../../services/api';
 
-type OfferPageProps = {
-  offers: Offers;
-  reviews: Reviews;
-};
+function OfferPage(): JSX.Element {
+  const [isFound, setIsFound] = useState(true);
+  const [foundOffer, setFoundOffer] = useState<Nullable<OfferInfo>>(null);
+  const [reviews, setReviews] = useState<Nullable<Reviews>>(null);
+  const [nearestOffers, setNearestOffers] = useState<Nullable<Offers>>(null);
 
-function OfferPage({offers, reviews}: OfferPageProps): JSX.Element {
   const { id } = useParams();
-  const foundOffer = offers.find((offer) => offer.id === id);
   const currentCity = useAppSelector((state) => state.city);
   const currentCityData = CITIES.find((city) => city.name === currentCity);
 
-  return foundOffer ? (
+  useEffect(() => {
+    const api = createAPI();
+
+    api.get(`${APIRoute.Offers}/${id}`)
+      .then(({data}) => setFoundOffer(data as OfferInfo))
+      .catch(() => setIsFound(false));
+
+    api.get(`${APIRoute.Comments}/${id}`)
+      .then(({data}) => setReviews(data as Reviews));
+
+    api.get(`${APIRoute.Offers}/${id}/nearby`)
+      .then(({data}) => setNearestOffers(data as Offers));
+  }, [id]);
+
+  if (!isFound) {
+    return <NotFoundPage type='offer' />;
+  }
+
+  return foundOffer && reviews && nearestOffers ? (
     <div className="page">
       <Helmet>
         <title>Offer</title>
@@ -31,6 +52,7 @@ function OfferPage({offers, reviews}: OfferPageProps): JSX.Element {
 
       <Header />
 
+      <ScrollToTop />
       <main className="page__main page__main--offer">
         <section className="offer">
           <div className="offer__gallery-container container">
@@ -127,7 +149,7 @@ function OfferPage({offers, reviews}: OfferPageProps): JSX.Element {
         </div>
       </main>
     </div>
-  ) : <NotFoundPage type='offer' />;
+  ) : <Loader />;
 }
 
 export default OfferPage;

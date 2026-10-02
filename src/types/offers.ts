@@ -35,3 +35,21 @@ export type Offer = {
 };
 
 export type Offers = Offer[];
+
+export type OfferInfo = {
+  id: string;
+  title: string;
+  type: HouseType;
+  price: number;
+  city: City;
+  location: Location;
+  isFavorite: boolean;
+  isPremium: boolean;
+  rating: Rating;
+  description: string;
+  bedrooms: number;
+  goods: string[];
+  host: Host;
+  images: string[];
+  maxAdults: number;
+};

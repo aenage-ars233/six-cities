@@ -8,14 +8,9 @@ import FavoritesPage from '../../pages/favorites-page/favorites-page';
 import OfferPage from '../../pages/offer-page/offer-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import PrivateRoute from '../private-route/private-route';
-import {Reviews} from '../../types/reviews';
 import {useAppSelector} from '../../hooks/store';
 
-type AppProps = {
-  reviews: Reviews;
-};
-
-function App({reviews}: AppProps): JSX.Element {
+function App(): JSX.Element {
   const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
 
   if (isOffersDataLoading) {
@@ -44,7 +39,7 @@ function App({reviews}: AppProps): JSX.Element {
           />
           <Route
             path={AppRoute.Offer}
-            element={<OfferPage offers={[]} reviews={reviews} />}
+            element={<OfferPage />}
           />
           <Route
             path="*"
